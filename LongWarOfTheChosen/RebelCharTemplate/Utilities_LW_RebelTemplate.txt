@@ -60,6 +60,15 @@ var config array<name> REBEL_UTILITY_ITEMS;
 var config array<name> REBEL_ALWAYS_EQUIP;
 var config array<RebelUtilityArchetype> REBEL_UTILITY_ARCHETYPES;
 
+// === Character Template Configurability ===
+// DISABLED, FOR REBEL CHARACTER TEMPLATES
+// List of character template names that rebel soldiers can spawn as.
+// If empty, default RebelSoldierProxy/M2/M3 templates are used.
+// Soft dependency: validates templates at runtime, falls back if not found.
+/* DISABLED, FOR REBEL CHARACTER TEMPLATES
+   var config array<string> REBEL_CHARACTER_TEMPLATES;
+*/
+
 const CA_FAILURE_RISK_MARKER = "CovertActionRisk_Failure";
 
 const OffensiveReflexAction = 'OffensiveReflexActionPoint_LW';
@@ -685,11 +694,56 @@ static function name RollLegacyLoadout(XComGameState_LWOutpost Outpost, StateObj
 	return name(LoadoutStr);
 }
 
+/* THIS IMPLEMENTS THE POSSIBILITY TO ADD OTHER TEMPLATES FOR CIVILIANS - REBEL SOLDIERS. NOT IN THE SCOPE OF THIS PR, BUT GOOD TO CHECK OUT
+/// Rolls a character template from REBEL_CHARACTER_TEMPLATES config array.
+/// Returns '' (empty name) if the array is empty or the rolled template is
+/// not found, signaling that the default RebelSoldierProxy should be used.
+/// Soft dependency: missing mod templates are silently skipped.
+static function name RollRebelCharacterTemplate()
+{
+	local X2CharacterTemplateManager CharTemplateMgr;
+	local X2CharacterTemplate CharTemplate;
+	local int RollIdx;
+	local name RolledName;
+
+	`LWTrace("CreateRebelSoldier: See if we have any Rebel Templates");
+	if (default.REBEL_CHARACTER_TEMPLATES.Length == 0)
+		return '';
+
+	CharTemplateMgr = class'X2CharacterTemplateManager'.static.GetCharacterTemplateManager();
+	`LWTrace("CreateRebelSoldier: We do! There are " @ default.REBEL_CHARACTER_TEMPLATES.Length);
+
+	RollIdx = `SYNC_RAND_STATIC(default.REBEL_CHARACTER_TEMPLATES.Length);
+	RolledName = name(default.REBEL_CHARACTER_TEMPLATES[RollIdx]);
+
+	`LWTrace("CreateRebelSoldier: We got: " @ RolledName);
+	
+	if(RolledName == 'RebelSoldierProxy') return '';
+	
+	CharTemplate = CharTemplateMgr.FindCharacterTemplate(RolledName);
+	if (CharTemplate == none)
+	{
+		`LWTrace("CreateRebelSoldier: No dice, going to basics!");
+		`Redscreen("Utilities_LW.RollRebelCharacterTemplate: Template not found:" @ RolledName
+			@ "- mod may not be installed. Falling back to default proxy.");
+		return '';
+	}
+
+	return RolledName;
+}
+*/
+
 // =============================================================================
 // CreateRebelSoldier — MODULAR VERSION
 // =============================================================================
 // Creates a soldier proxy for the given rebel, sets them as on-mission,
 // and gives them a loadout.
+//
+// Character template selection
+//   If REBEL_CHARACTER_TEMPLATES is configured, one entry is rolled at random.
+//   This enables species mods (PlayableAdvent, PlayableAliens, etc.) to add
+//   non-human rebels via config. Falls back to default proxy if not installed.
+//	 FOR NOW; THIS PART IS NOT ENABLED, MUST BE REVIEWED, KEPT FOR FUTURE WORK
 //
 // Loadout assignment:
 //   For custom character templates, uses the template's own DefaultLoadout.
@@ -699,6 +753,10 @@ static function name RollLegacyLoadout(XComGameState_LWOutpost Outpost, StateObj
 // =============================================================================
 function static XComGameState_Unit CreateRebelSoldier(StateObjectReference RebelRef, StateObjectReference OutpostRef, XComGameState NewGameState, optional name Loadout)
 {
+// DISABLED, FOR REBEL CHARACTER TEMPLATES
+//	local name RolledCharTemplate;
+//	local bool bUsingCustomTemplate;
+// DISABLED, FOR REBEL CHARACTER TEMPLATES
 	local XComGameState_LWOutpost Outpost;
 	local XComGameState_Unit Proxy;
 	local Name TemplateName;
@@ -711,6 +769,18 @@ function static XComGameState_Unit CreateRebelSoldier(StateObjectReference Rebel
 	
 	Outpost = XComGameState_LWOutpost(`XCOMHISTORY.GetGameStateForObjectID(OutpostRef.ObjectID));
 
+/* DISABLED, FOR REBEL CHARACTER TEMPLATES
+	// === DETERMINE CHARACTER TEMPLATE ===
+	RolledCharTemplate = RollRebelCharacterTemplate();
+	bUsingCustomTemplate = (RolledCharTemplate != '');
+	if (bUsingCustomTemplate)
+	{
+		TemplateName = RolledCharTemplate;
+		`LWTrace("CreateRebelSoldier: Using custom character template:" @ TemplateName);
+	}
+	else
+	{
+*/
 	switch(Outpost.GetRebelLevel(RebelRef))
 	{
 		case 0:
@@ -726,11 +796,23 @@ function static XComGameState_Unit CreateRebelSoldier(StateObjectReference Rebel
 			`Redscreen("CreateRebelSoldier: Unsupported rebel level" @ Outpost.GetRebelLevel(RebelRef));
 			TemplateName = 'RebelSoldierProxy';
 	}
+//	}
 
 	Proxy = CreateRebelProxy(RebelRef, OutpostRef, TemplateName, true, NewGameState);
+
+//	if (!bUsingCustomTemplate)
+//	{
 	Proxy.SetSoldierClassTemplate('LWS_RebelSoldier');
+//	}
 
 	// === LOADOUT ASSIGNMENT ===
+/* DISABLED, FOR REBEL CHARACTER TEMPLATES
+	if (bUsingCustomTemplate)
+	{
+		// Custom character templates use their own DefaultLoadout.
+		`LWTrace("Rebel Loadout (custom template):" @ TemplateName);
+	}
+	else */
 	if (Loadout != '')
 	{
 		ApplyLoadout(Proxy, Loadout, NewGameState);

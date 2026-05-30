@@ -1,0 +1,19 @@
+[0173.65] LWTrace: Adding Maricruz Castillo to rendezvous squad
+[0173.65] LWTrace: Creating proxy for Maricruz Castillo with template RebelSoldierProxy
+[0173.65] Log: Missing Unit Template None on XComGameState_Unit_619
+[0173.65] ScriptLog: Applying Random Stats to Unit Maricruz Castillo
+[0173.65] LWTrace: AdvancedLasersResearched: False
+[0173.65] LWTrace: MagnetizedWeaponsResearched: True
+[0173.65] LWTrace: GaussWeaponsResearched: True
+[0173.65] LWTrace: CoilgunsResearched: False
+[0173.65] LWTrace: AdvancedCoilgunsResearched:  False
+[0173.65] LWTrace: PlasmaRifleResearched: True
+[0173.65] LWTrace: AlloyCannonResearched: True
+[0173.65] LWTrace: HeavyPlasmaResearched: True
+[0173.65] LWTrace: PlasmaSniperResearched: True
+[0173.65] LWTrace: Coil Chance: 30  - Mag Chance: 100  - Laser Chance: 0  - iRand: 94
+[0173.65] LWTrace: Rebel Weapon Tier: 4
+[0173.65] LWTrace: Rebel Weapon:  Shotgun_CG
+[0173.65] LWTrace: Rebel Slot 1: SmokeGrenadeMk2
+[0173.65] LWTrace: Rebel Slot 2: Medikit
+[0173.65] LWTrace: Rebel Loadout: shotgun  - Weapon Tier:4  - Weapon Template: Shotgun_CG  - Archetype: DefUtil

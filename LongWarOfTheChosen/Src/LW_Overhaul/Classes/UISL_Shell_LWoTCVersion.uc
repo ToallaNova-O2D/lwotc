@@ -44,10 +44,10 @@ event OnInit(UIScreen Screen)
 simulated function CreatePanel_DialogBox_LWOTC(UIScreen Screen)
 {
 	local TDialogueBoxData kDialogData;
-	local UIDialogueBox DialogBox;
+//	local UIDialogueBox DialogBox;
 	local UIScreenStack ScreenStack;
-	local UIImage			WarningImage_LWoTC;
-	local Vector2D imagepos;
+//	local UIImage			WarningImage_LWoTC;
+//	local Vector2D imagepos;
 
 	
 	kDialogData.strTitle = class'UIUtilities_Text'.static.GetColoredText(strMessage_Title @ class'LWVersion'.static.GetShortVersionString(), eUIState_Bad, 32);
@@ -64,7 +64,7 @@ simulated function CreatePanel_DialogBox_LWOTC(UIScreen Screen)
 
 	ScreenStack = `SCREENSTACK;
 
-	DialogBox = UIDialogueBox(ScreenStack.GetCurrentScreen());
+//	DialogBox = UIDialogueBox(ScreenStack.GetCurrentScreen());
 
 	// Image part doesn't work yet, so leaving out for now.
 	/* 

@@ -4480,7 +4480,7 @@ static function AddLongWatchEffect(X2AbilityTemplate Template)
 	local X2Effect_SetUnitValue LongWatchValue;
 	local X2Effect_CoveringFire CoveringFireEffect;
 	local X2Condition_AbilityProperty CoveringFireCondition;
-	local X2Effect TargetEffect;
+//	local X2Effect TargetEffect;
 
 	LongWatchValue = new class'X2Effect_SetUnitValue';
 	LongWatchValue.UnitName = 'LWLongWatchActivated';
